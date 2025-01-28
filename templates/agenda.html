@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h1 {
+            color: #4A90E2;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="date"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 48%;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #357ABD;
+        }
+        .tarefa-item {
+            background-color: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .tarefa-item button {
+            background-color: #E74C3C;
+            font-size: 14px;
+        }
+        .tarefa-item button:hover {
+            background-color: #C0392B;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minha Agenda</h1>
+        <div class="input-container">
+            <input type="text" id="tarefa" placeholder="Digite a tarefa" />
+            <input type="date" id="data" />
+        </div>
+        <button onclick="adicionar_tarefa()">Adicionar Tarefa</button>
+        <div id="lista-de-tarefas" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        // Seção de Modelagem (de dados)
+        let afazeres;
+        let afazeresSalvos = JSON.parse(localStorage.getItem("afazeres"));
+        if (Array.isArray(afazeresSalvos)) {
+            afazeres = afazeresSalvos;
+        } else {
+            afazeres = [];
+        }
+
+        function salvarTarefas() {
+            localStorage.setItem("afazeres", JSON.stringify(afazeres));
+        }
+
+        // Seção de Visualização
+        function renderizar() {
+            document.getElementById("lista-de-tarefas").innerHTML = "";
+
+            afazeres.forEach(function(tarefa) {
+                const botao = document.createElement("button");
+                botao.innerHTML = "Apagar";
+                botao.style = "padding: 5px 10px; background-color: #E74C3C; color: white; border-radius: 5px; cursor: pointer;";
+                botao.id = tarefa.id;
+                botao.onclick = removerTarefa;
+
+                const elemento = document.createElement("div");
+                elemento.className = "tarefa-item";
+                elemento.innerHTML = `${tarefa.nome} - ${tarefa.data}`;
+                elemento.appendChild(botao);
+
+                const lista_tarefas = document.getElementById("lista-de-tarefas");
+                lista_tarefas.appendChild(elemento);
+            });
+        }
+
+        // Seção de Controle
+        function adicionar_tarefa() {
+            const caixaDeTexto = document.getElementById("tarefa");
+            const campoData = document.getElementById("data");
+            const tarefa = caixaDeTexto.value;
+            const data = campoData.value;
+
+            if (tarefa && data) { // Verifica se ambos os campos foram preenchidos
+                afazeres.push({
+                    nome: tarefa,
+                    data: data,
+                    id: Date.now()
+                });
+
+                salvarTarefas();
+                renderizar();
+                caixaDeTexto.value = "";  // Limpar campo de tarefa
+                campoData.value = "";  // Limpar campo de data
+            } else {
+                alert("Por favor, preencha ambos os campos (tarefa e data).");
+            }
+        }
+
+        function removerTarefa(evento) {
+            const botao = evento.target;
+            const id = botao.id;
+            afazeres = afazeres.filter(function(tarefa) {
+                return tarefa.id != id;
+            });
+            salvarTarefas();
+            renderizar();
+        }
+
+        // Inicializa a renderização ao carregar a página
+        renderizar();
+    </script>
+</body>
+</html>

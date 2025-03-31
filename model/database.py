@@ -1,7 +1,7 @@
 import mysql.connector as mc # Importando a biblioteca do conector do MySQL
 from mysql.connector import Error # Importando a classe Error para tratar as mensagens de erro do código
 from dotenv import load_dotenv # Importando a função load_dotenv
-from os import getenv # Importando a função getenv
+from os import getenv
 
 class Database:
     def __init__(self):

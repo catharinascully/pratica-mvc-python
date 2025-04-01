@@ -1,4 +1,3 @@
-from turtle import title
 from flask import Flask, render_template, request, redirect, url_for
 from model.tarefa import Tarefa
 

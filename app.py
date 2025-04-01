@@ -20,7 +20,12 @@ def delete(idTarefa):
     Tarefa.apagarTarefa(idTarefa)
     return redirect(url_for('index'))
 
-@app.route('/update/<int:idTarefa>')
-def update(idTarefa):
-    Tarefa.atualizarTarefa(idTarefa)
-    return redirect(url_for('index'))
+@app.route("/edit/<int:idTarefa>", methods=["GET", "POST"])
+def edit(idTarefa):
+    if request.method == "POST":
+        # Atualizar a tarefa no banco de dados
+        titulo = request.form["titulo"]
+        data_conclusao = request.form["data_conclusao"]
+        tarefa = Tarefa(titulo=titulo, data_conclusao=data_conclusao, id=idTarefa)
+        tarefa.atualizarTarefa()
+        return redirect(url_for("index"))

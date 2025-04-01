@@ -42,6 +42,6 @@ class Tarefa:
         db = Database()
         db.conectar()
         sql = 'UPDATE tarefa SET titulo = %s, data_conclusao = %s where id = %s'
-        params = (self.id, self.titulo, self.data_conclusao)
+        params = (self.titulo, self.data_conclusao, self.id)
         db.executar(sql, params)
         db.desconectar()
